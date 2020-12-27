@@ -1,0 +1,108 @@
+#include <Arduino.h>
+#include <Servo.h>
+
+int fromPi = 0;
+
+//SERIAL VALUE CODES
+// 1 == ARM
+// 0 == DISARM
+// ANY OTHER VALUE == THROTTLE VALUE
+Servo ail, ele, thr, rud, aux; //The various signal values
+int vail, vele, vthr, vrud, vaux;
+//int val=100;
+
+//This function sends updated values to all the signals to the kk2.1
+void normalize()
+{
+  ail.writeMicroseconds(vail);
+  ele.writeMicroseconds(vele);
+  thr.writeMicroseconds(vthr);
+  rud.writeMicroseconds(vrud);
+  aux.writeMicroseconds(vaux);
+}
+
+void arm()
+{
+  if (vthr > 1000)
+  {
+    Serial.println("Throttle not zero");
+    return;
+  }
+  vrud = 1000;
+  normalize();
+  delay(3000);
+  vrud = 1502;
+  normalize();
+  Serial.println("ARMED");
+}
+
+void disarm()
+{
+  if (vthr > 1000)
+  {
+    Serial.println("Throttle not zero");
+    return;
+  }
+  vrud = 2000;
+  normalize();
+  delay(3000);
+  vrud = 1502;
+  normalize();
+  Serial.println("DISARMED");
+}
+
+void setup()
+{
+  Serial.begin(115200);
+  //initialization
+  vail = 1502;
+  vele = 1502;
+  vthr = 1000;
+  vrud = 1502;
+  vaux = 2000;
+  //attach servo objects
+  ail.attach(3); //Roll
+  ele.attach(5); //Pitch
+  thr.attach(6); //Up Down
+  rud.attach(9); //Yaw
+  aux.attach(10);
+  delay(1);
+  normalize();
+}
+
+void loop()
+{
+
+  while (Serial.available() == 0);
+  int val = Serial.parseInt();
+  Serial.println(val);
+  if (val == 1)
+  {
+    arm();
+  }
+  else if (val == 0)
+  {
+    disarm();
+  }
+  else
+  {
+    if (val > vthr)
+    {
+      while (vthr != val)
+      {
+        vthr++;
+        normalize();
+        delay(5);
+      }
+    }
+    else if (val < vthr)
+    {
+      while (vthr != val)
+      {
+        vthr--;
+        normalize();
+        delay(5);
+      }
+    }
+  }
+}

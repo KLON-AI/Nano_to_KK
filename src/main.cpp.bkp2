@@ -1,0 +1,60 @@
+#include <Arduino.h>
+#define onboard 13
+int fromPi = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(onboard, OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.println("ACK");
+  delay(20);
+
+  if(Serial.available() > 0)
+  {
+    fromPi = Serial.read();
+    // Serial.print("I Received: ");
+    // Serial.print(fromPi,DEC);
+    // Serial.print(fromPi);
+    // delay(500);
+
+    if(fromPi == 'L')
+    {
+      digitalWrite(onboard, HIGH);
+      delay(10);
+      digitalWrite(onboard, LOW);
+      delay(10);
+    }
+    else if(fromPi == 'R')
+    {
+      digitalWrite(onboard, HIGH);
+      delay(10);
+      digitalWrite(onboard, LOW);
+      delay(10);
+    }
+    else if(fromPi == 'F')
+    {
+      digitalWrite(onboard, HIGH);
+      delay(10);
+      digitalWrite(onboard, LOW);
+      delay(10);
+    }
+    else if(fromPi == 'B')
+    {
+      digitalWrite(onboard, HIGH);
+      delay(10);
+      digitalWrite(onboard, LOW);
+      delay(10);
+    }
+    else if(fromPi == 'N')
+    {
+      Serial.print("No Input");
+    }
+    else{
+      Serial.print("No Input");
+    }
+  }
+}
