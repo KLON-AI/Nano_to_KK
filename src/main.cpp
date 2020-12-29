@@ -3,7 +3,7 @@
 
 #define onboard 13
 int fromPi = 0;
-
+bool ARMED = false;
 //SERIAL VALUE CODES
 // 1 == ARM
 // 0 == DISARM
@@ -11,6 +11,13 @@ int fromPi = 0;
 Servo ail, ele, thr, rud, aux; //The various signal values
 int vail, vele, vthr, vrud, vaux;
 //int val=100;
+
+void led(int time){
+  digitalWrite(onboard, HIGH);
+  delay(time);
+  digitalWrite(onboard, LOW);
+  delay(time);
+}
 
 //This function sends updated values to all the signals to the kk2.1
 void normalize()
@@ -35,6 +42,7 @@ void arm()
   vrud = 1502;
   normalize();
   Serial.println("ARMED");
+  ARMED = true;
 
   digitalWrite(onboard, HIGH);
   delay(10);
@@ -55,12 +63,14 @@ void disarm()
   vrud = 1502;
   normalize();
   Serial.println("DISARMED");
-
+  ARMED = true;
   digitalWrite(onboard, HIGH);
   delay(10);
   digitalWrite(onboard, LOW);
   delay(10);
 }
+
+
 
 void setup()
 {
@@ -95,62 +105,153 @@ void loop()
     // Serial.print(fromPi);
     // delay(500);
 
-    if(fromPi == 'A')
+    if(fromPi == 'Z')
     {
-      // Serial.print("ARM");
       arm();
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
+      // vthr= 1200;
+      // normalize();
+      // delay(5);
+      led(50);
+
+
     }
-    else if(fromPi == 'D')
+    else if(fromPi == 'X')
     {
-      // Serial.print("DISARM");
+      vthr= 1000;
+      normalize();
+      delay(700);
       disarm();
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
+      led(50);
     }
 
 
+    else if(fromPi == 'J')
+    {
+      // Yaw LEFT
+      Serial.println("Yaw Left");
+      vrud = 1000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+    }
 
-    else if(fromPi == 'F')
+    else if(fromPi == 'L')
+    {
+      // Yaw RIGHT
+      Serial.println("Yaw Right");
+      vrud = 2000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+    }
+
+
+    else if(fromPi == 'I')
     {
       // Throttle UP
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
+      Serial.println("Throttle UP");
+      vthr= 1200;
+      normalize();
+      delay(5);
+      // led(10);
+
     }
-    else if(fromPi == 'B')
+    else if(fromPi == 'K')
     {
       // Throttle DOWN
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
-      digitalWrite(onboard, HIGH);
-      delay(100);
-      digitalWrite(onboard, LOW);
-      delay(100);
+      Serial.println("Throttle DOWN");
+      vthr= 1900;
+      normalize();
+      delay(5);
+    }
+
+    else if(fromPi == 'A')
+    {
+      // Left
+      Serial.println("Left");
+      vail = 1000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+    }
+
+    else if(fromPi == 'D')
+    {
+      // Right
+      Serial.println("Right");
+      vail = 2000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+    }
+
+
+    else if(fromPi == 'W')
+    {
+      // Forward
+      Serial.println("Forward");
+      vele = 1000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+      // led(10);
+
+    }
+    else if(fromPi == 'S')
+    {
+      // Backward
+      Serial.println("Backward");
+      vele = 2000;
+      vthr= 1500;
+      normalize();
+      delay(5);
+    }
+
+
+    else if(fromPi == 'M')
+    {
+      // Stable
+      Serial.println("Stable");
+      vail = 1502;
+      vele = 1502;
+      vthr = 1500;
+      vrud = 1502;
+      vaux = 2000;
+      normalize();
+      delay(5);
+    }
+// 1300 = 19
+
+// 1500 = 44
+
+// 1800 = 82
+
+// 2000= 108
+
+    else if(fromPi == 'C')
+    {
+      // reset
+      Serial.println("Test ON");
+      // vail = 1502;
+      // vele = 1502;
+      vthr = 1200;
+      // vrud = 1502;
+      // vaux = 2000;
+      normalize();
+      delay(5);
+    }
+
+    else if(fromPi == 'V')
+    {
+      // Test off
+      Serial.println("Test OFF");
+      vail = 1502;
+      vele = 1502;
+      vthr = 1000;
+      vrud = 1502;
+      vaux = 2000;
+      normalize();
+      delay(5);
     }
 
 
@@ -162,7 +263,7 @@ void loop()
       Serial.print("No Input");
     }
     else{
-      Serial.print("No Input");
+      Serial.println("No Input");
     }
   }
 }
